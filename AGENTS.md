@@ -43,3 +43,9 @@ Strictly follow this folder structure when creating new code
 ```
 
 <!-- END:folder structure -->
+
+<!-- BEGIN:architecture -->
+
+Always read ARCHITECTURE.md for this project's architecture and best practices.
+
+<!-- END:architecture -->
