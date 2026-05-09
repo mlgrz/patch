@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { createClient } from "@/utils/supabase/server";
+import { getUserProfile } from "@/features/onboarding/services/profile";
 import { slugify } from "@/lib/utils/slug";
+import { createClient } from "@/utils/supabase/server";
 
 const createProjectSchema = z.object({
   name: z.string().trim().min(1),
@@ -27,6 +28,22 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { profile, error: profileError } = await getUserProfile(supabase, user.id);
+
+  if (profileError) {
+    return NextResponse.json(
+      { error: "Could not verify your profile" },
+      { status: 500 },
+    );
+  }
+
+  if (!profile) {
+    return NextResponse.json(
+      { error: "Complete onboarding before creating a project" },
+      { status: 403 },
+    );
   }
 
   let json: unknown;
